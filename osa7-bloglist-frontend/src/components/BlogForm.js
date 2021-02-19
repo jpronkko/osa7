@@ -7,6 +7,8 @@ import { errorMessage, message } from '../reducers/notificationReducer'
 import { createBlog } from '../reducers/blogReducer'
 import useField from './useField'
 
+import { initUserInfo } from '../reducers/userInfoReducer'
+
 const BlogForm = () => {
   const { reset: resetTitle, ...title } = useField('text')
   const { reset: resetAuthor, ...author } = useField('text')
@@ -24,7 +26,10 @@ const BlogForm = () => {
     resetUrl()
 
     dispatch(createBlog({ title: title.value, author: author.value, url: url.value, likes: 0 }))
-    .then(() => dispatch(message(`A new blog "${title.value}" by ${author.value} added`)))
+    .then(() => {
+      dispatch(initUserInfo())
+      dispatch(message(`A new blog "${title.value}" by ${author.value} added`))
+    })
     .catch(error => {
         dispatch(errorMessage('Create blog failed, ' + error.message))
         console.error('Create blog failed:', error.message)}
